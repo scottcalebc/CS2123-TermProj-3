@@ -46,9 +46,12 @@ double run_int(int **retarr, int *target, int sort, int dataSize, int (*search)(
 
     if (sort)
     {
-        printf("sorting\n");
-        radixSort_int(arr, dataSize);
+        quickSort_int(arr, 0, dataSize - 1);
     }
+
+    if (*target == -1)
+        *target = arr[dataSize - 1];
+
     clock_t t;
     t = clock();
     if (search != NULL)
@@ -66,7 +69,7 @@ double run_int(int **retarr, int *target, int sort, int dataSize, int (*search)(
     else
         free(arr);
 
-    return ((double)t)/CLOCKS_PER_SEC;
+    return (double)(t)/CLOCKS_PER_SEC;
 }
 
 void writeData(char *algo, int dataSize, double time_taken, char *fileName)
@@ -92,16 +95,15 @@ void writeData(char *algo, int dataSize, double time_taken, char *fileName)
 
 void Run_int(char *algo, int sort, int (*search)(int[],int,int))
 {
-    int arr[] = {1000, 50000, 75000, 100000, 250000, 500000, 750000, 1000000, 10000000, 50000000, 75000000};
+    int arr[] = {1000, 50000, 75000, 100000, 250000, 500000, 750000, 1000000, 10000000, 50000000, 75000000, 100000000};
     int i, j;
     double avgTime = 0;
-    int target;
+    int target = -1;
     
 
     for(i = 0; i < sizeof(arr)/sizeof(int); i++)
     {  
         avgTime = 0;
-        target = rand(); 
         for(j = 0; j < 5; j++)
         {
               
@@ -161,6 +163,9 @@ double run_str(char **names, char *target, int *targetI, int sort, int dataSize,
     if (sort)
         heapSort_str(names, dataSize);
 
+    if (*targetI == -1)
+        strcpy(target, names[dataSize - 1]);
+
     int targ;
     clock_t t;
     t = clock();
@@ -171,7 +176,7 @@ double run_str(char **names, char *target, int *targetI, int sort, int dataSize,
     if (targetI != NULL)
         *targetI = targ;
 
-    return ((double)t)/CLOCKS_PER_SEC;
+    return (double)(t)/CLOCKS_PER_SEC;
 
 }
 
@@ -183,24 +188,25 @@ void Run_str(char *algo, int sort, int (*search)(char *[],int,char *[]))
     char **names;
     double avgTime;
 
-    int target;
+    int target = -1;
     char name[MAX_LEN+1] = {0};
     
 
     for(i = 0; i < sizeof(dataSize)/sizeof(int); i++)
     {
-        target = rand() % dataSize[i];
+        avgTime = 0;
+        
 
         for(j = 0; j < 5; j++)
         {    
+            target = -1;
             names = fill(dataSize[i], "new_name.txt");
-            strcpy(name, names[target]);
             if (search != NULL)
-                avgTime += run_str(names, name, NULL, sort, dataSize[i], search);
+                avgTime += run_str(names, name, &target, sort, dataSize[i], search);
             
             releaseArr(names, dataSize[i]);
         }  
-        writeData(algo, dataSize[i], avgTime/5, "runtime_str.txt"); 
+        writeData(algo, dataSize[i], avgTime/5.0, "runtime_str.txt"); 
     }
 }
 
