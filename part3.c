@@ -351,10 +351,10 @@ void menu()
         switch (algo)
         {
         case 1:
-            time = run_str(items, target_str, &target_int, size, linearSearchIterative_str);
+            time = run_str(items, target_str, &target_int, 0, size, linearSearchIterative_str);
             break;
         case 2:
-            time = run_str(items, target_str, &target_int, size, BinarySearchIterative_str);
+            time = run_str(items, target_str, &target_int, 1, size, BinarySearchIterative_str);
             break;
         default:
             break;
